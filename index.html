@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asisten Belajar Offline - Bahan Latihan P13</title>
+  <meta name="description" content="Aplikasi Asisten Belajar Offline lokal di browser dengan AI Chatbot temu balik modul materi dan Generator Kuis interaktif berbasis folder Bahan Latihan P13.">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Window Container (Mac/Desktop Shell Style) -->
+  <div class="window-container">
+    
+    <!-- Titlebar & Simulated Local Address Bar -->
+    <header class="window-titlebar">
+      <div class="window-dots">
+        <span class="dot dot-red" title="Tutup"></span>
+        <span class="dot dot-yellow" title="Minimalkan"></span>
+        <span class="dot dot-green" title="Maksimalkan"></span>
+      </div>
+
+      <div class="window-address-bar" title="Aplikasi berjalan offline lokal di browser">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+        <span>file:///C:/BahanP13/asisten_belajar.html</span>
+        <span class="badge-offline">100% OFFLINE</span>
+      </div>
+
+      <div class="window-header-actions">
+        <button class="btn-header-scan" id="btnHeaderScan" title="Pindai folder target dan subfoldernya secara rekursif">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            <line x1="12" y1="11" x2="12" y2="17"></line>
+            <line x1="9" y1="14" x2="15" y2="14"></line>
+          </svg>
+          Pindai Folder
+        </button>
+      </div>
+    </header>
+
+    <!-- Main App Body -->
+    <div class="app-body">
+      
+      <!-- Left Sidebar: Module Selector & File Navigator -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title-row">
+            <span class="sidebar-title">Modul Tersedia</span>
+            <span class="sidebar-badge" id="moduleCountBadge">10 MODUL</span>
+          </div>
+          <div class="sidebar-search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="sidebarSearch" placeholder="Cari modul atau topik...">
+          </div>
+        </div>
+
+        <!-- List of Modules -->
+        <ul class="module-list" id="moduleList">
+          <!-- Diisi secara dinamis oleh app.js -->
+        </ul>
+
+        <!-- Sidebar Footer Actions -->
+        <div class="sidebar-footer">
+          <button class="btn-sidebar-scan" id="btnOpenScan">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Pindai Folder Bahan P13
+          </button>
+          <span>Pindai mendalam folder & semua subfolder</span>
+        </div>
+      </aside>
+
+      <!-- Right Main Content Area -->
+      <main class="content-area">
+        
+        <!-- Top Tab Navigation -->
+        <nav class="tabs-nav" aria-label="Navigasi Menu">
+          <button class="tab-btn active" id="tabChatbot">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            AI Chatbot
+          </button>
+          <button class="tab-btn quiz-tab" id="tabQuiz">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            Generator Kuis
+          </button>
+        </nav>
+
+        <!-- PANEL 1: AI Chatbot -->
+        <section class="tab-panel active" id="panelChatbot">
+          <div class="chat-panel">
+            
+            <!-- Chat Messages Stream -->
+            <div class="chat-messages" id="chatMessages">
+              <!-- AI Welcome Message -->
+              <div class="msg-row ai">
+                <div class="msg-avatar">AI</div>
+                <div class="msg-content">
+                  <div class="msg-bubble">
+                    Halo! Saya Asisten Belajar Offline. Pilih modul di sidebar kiri, lalu ketik pertanyaanmu atau klik <strong>Rangkum</strong>.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Initial Demo Dialogue matching user mockup -->
+              <div class="msg-row user">
+                <div class="msg-avatar">U</div>
+                <div class="msg-content">
+                  <div class="msg-bubble">
+                    Jelaskan fungsi asam klorida (HCl) dan pepsin dalam sistem pencernaan!
+                  </div>
+                </div>
+              </div>
+
+              <div class="msg-row ai">
+                <div class="msg-avatar">AI</div>
+                <div class="msg-content">
+                  <div class="msg-bubble">
+                    Asam klorida (HCl) diproduksi sel parietal lambung. Fungsinya: (1) mengaktifkan pepsinogen menjadi pepsin, (2) membunuh bakteri patogen, (3) menciptakan pH asam untuk kerja enzim. Pepsin sendiri berfungsi memecah protein menjadi polipeptida melalui hidrolisis ikatan peptida.
+                  </div>
+                  <div class="msg-source">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    Sumber: Modul_02_Biologi... - Bab 3, Hal. 14
+                  </div>
+                  <div class="gemini-action-bar">
+                    <button class="gemini-action-btn" onclick="navigator.clipboard.writeText(this.closest('.msg-content').querySelector('.msg-bubble').innerText); this.innerHTML='✓ Tersalin!'; setTimeout(()=>this.innerHTML='📋 <span>Salin</span>', 2000);">📋 <span>Salin</span></button>
+                    <button class="gemini-action-btn" onclick="const u=new SpeechSynthesisUtterance(this.closest('.msg-content').querySelector('.msg-bubble').innerText); u.lang='id-ID'; window.speechSynthesis.speak(u);">🔊 <span>Dengarkan</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Suggestions Bar -->
+            <div class="quick-chips-bar" id="quickChipsBar">
+              <!-- Diisi dinamis berdasarkan modul yang aktif -->
+            </div>
+
+            <!-- Chat Input Controls -->
+            <div class="chat-input-bar">
+              <input type="text" id="chatInput" placeholder="Apa itu renin dan apa bedanya dengan pepsin?">
+              <button class="btn-send" id="btnSend">Kirim</button>
+              <button class="btn-summary" id="btnSummary">Rangkum</button>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- PANEL 2: Generator Kuis -->
+        <section class="tab-panel" id="panelQuiz">
+          <div class="quiz-panel">
+            
+            <!-- Active Quiz View -->
+            <div id="quizActiveView">
+              
+              <!-- Quiz Subheader & Score Badge -->
+              <div class="quiz-header-bar">
+                <div class="quiz-meta-info" id="quizMetaInfo">Soal 3 dari 5 • Modul_02_Biologi</div>
+                <div class="quiz-score-badge" id="quizScoreBadge">Skor: 2/2</div>
+              </div>
+
+              <!-- Animated Progress Bar -->
+              <div class="quiz-progress-track">
+                <div class="quiz-progress-fill" id="quizProgressFill" style="width: 60%;"></div>
+              </div>
+
+              <!-- Question Box -->
+              <div class="quiz-question-box" id="quizQuestionBox">
+                <!-- Diisi pertanyaan dinamis -->
+              </div>
+
+              <!-- Multiple Choice Options (A, B, C, D) -->
+              <div class="quiz-options-list" id="quizOptionsList">
+                <!-- Diisi opsi A, B, C, D -->
+              </div>
+
+              <!-- Instant Feedback Container (Google Form / Interactive review) -->
+              <div id="quizFeedbackContainer">
+                <!-- Tampil kartu skor & ulasan jawaban benar -->
+              </div>
+
+            </div>
+
+            <!-- Quiz Completion Container (Saat selesai seluruh soal) -->
+            <div id="quizCompleteContainer" style="display: none;">
+              <!-- Rangkuman hasil akhir -->
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+    </div>
+
+    <!-- Hidden Native Directory Picker Fallback Input -->
+    <input type="file" id="folderNativeInput" webkitdirectory directory multiple style="display: none;">
+
+    <!-- Modal Dialog: Folder Scanner -->
+    <div class="modal-overlay" id="modalScanner">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Pindai Folder Modul Pembelajaran (Bahan Latihan P13)</h3>
+          <button class="modal-close-btn" id="btnCloseModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">
+            Aplikasi akan memindai folder target dan seluruh subfolder secara rekursif (mendalam) untuk mengumpulkan semua modul materi, dokumen teks, dan file ujian.
+          </p>
+
+          <div class="scan-dropzone" id="dropZone">
+            <div class="scan-icon">📂</div>
+            <strong style="color: #1e293b; font-size: 14px;">Seret dan Lepas Folder Disini</strong>
+            <p style="font-size: 12px; color: #64748b; margin-top: 4px;">atau klik tombol di bawah untuk memilih folder dari harddisk</p>
+          </div>
+
+          <div class="scan-file-status" id="scanStatusBox">
+            Status: Menunggu pemilihan folder...
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-sidebar-scan" style="width: auto;" id="btnFolderSelect">
+            📁 Pilih Folder dari Komputer
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="modules_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
